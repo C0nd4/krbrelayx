@@ -41,6 +41,7 @@ import argparse
 import sys
 import binascii
 import logging
+import cmd
 from impacket.examples.ldap_shell import LdapShell
 from impacket.examples import logger
 from impacket.examples.ntlmrelayx.attacks import PROTOCOL_ATTACKS
