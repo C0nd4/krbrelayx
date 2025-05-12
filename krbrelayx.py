@@ -42,6 +42,7 @@ import sys
 import binascii
 import logging
 import cmd
+import json
 from impacket.examples.ldap_shell import LdapShell
 from impacket.examples import logger
 from impacket.examples.ntlmrelayx.attacks import PROTOCOL_ATTACKS
@@ -49,7 +50,11 @@ from impacket.examples.ntlmrelayx.utils.targetsutils import TargetsProcessor, Ta
 from impacket.examples.ntlmrelayx.servers.socksserver import SOCKS
 from lib.servers import SMBRelayServer, HTTPKrbRelayServer, DNSRelayServer
 from lib.utils.config import KrbRelayxConfig
-
+from threading import Thread
+try:
+    from urllib.request import ProxyHandler, build_opener, Request
+except:
+    from urllib2 import ProxyHandler, build_opener, Request
 
 RELAY_SERVERS = ( SMBRelayServer, HTTPKrbRelayServer, DNSRelayServer )
 
@@ -98,11 +103,11 @@ class MiniShell(cmd.Cmd):
     def do_socks(self, line):
         '''Filter are available :
  type : socks <filter> <value>
- filters : target, username, admin 
- values : 
+ filters : target, username, admin
+ values :
    - target : IP or FQDN
    - username : domain/username
-   - admin : true or false 
+   - admin : true or false
         '''
 
         headers = ["Protocol", "Target", "Username", "AdminStatus", "Port"]
@@ -128,7 +133,7 @@ class MiniShell(cmd.Cmd):
                     elif(_filter=='admin'):
                         _filter=3
                     else:
-                        logging.info('Expect : target / username / admin = value')                    
+                        logging.info('Expect : target / username / admin = value')
                     _items=[]
                     for i in items:
                         if(_value.lower() in i[_filter].lower()):
@@ -260,6 +265,7 @@ def main():
                                                                    'setting the proxy host to the one supplied.')
     parser.add_argument('-wa', '--wpad-auth-num', action='store', help='Prompt for authentication N times for clients without MS16-077 installed '
                                                                        'before serving a WPAD file.')
+    parser.add_argument('-http-api-port', default=9090, type=int)
     parser.add_argument('-6', '--ipv6', action='store_true', help='Listen on both IPv6 and IPv4')
 
     # Authentication arguments
@@ -308,7 +314,7 @@ def main():
     adcsoptions.add_argument('--template', action='store', metavar="TEMPLATE", required=False, help='AD CS template. Defaults to Machine or User whether relayed account name ends with `$`. Relaying a DC should require specifying `DomainController`')
     adcsoptions.add_argument('--altname', action='store', metavar="ALTNAME", required=False, help='Subject Alternative Name to use when performing ESC1 or ESC6 attacks.')
     adcsoptions.add_argument('-v', "--victim", action='store', metavar = 'TARGET', help='Victim username or computername$, to request the correct certificate name.')
-    
+
     try:
         options = parser.parse_args()
     except Exception as e:
