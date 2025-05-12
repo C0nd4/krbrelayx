@@ -41,7 +41,7 @@ import argparse
 import sys
 import binascii
 import logging
-
+from impacket.examples.ldap_shell import LdapShell
 from impacket.examples import logger
 from impacket.examples.ntlmrelayx.attacks import PROTOCOL_ATTACKS
 from impacket.examples.ntlmrelayx.utils.targetsutils import TargetsProcessor, TargetsFileWatcher
@@ -68,6 +68,7 @@ def main():
             #Set up config
             c = KrbRelayxConfig()
             c.setProtocolClients(PROTOCOL_CLIENTS)
+            c.setInteractive(options.i)
             c.setTargets(targetSystem)
             c.setExeFile(options.e)
             c.setCommand(options.c)
@@ -110,7 +111,7 @@ def main():
                                      description="Kerberos relay and unconstrained delegation abuse tool. "
                                                   "By @_dirkjan / dirkjanm.io")
     parser._optionals.title = "Main options"
-
+    parser.add_argument("-i", action="store_true", help="use interactive LDAP shell")
     #Main arguments
     parser.add_argument("-h", "--help", action="help", help='show this help message and exit')
     parser.add_argument('-debug', action='store_true', help='Turn DEBUG output ON')
