@@ -69,3 +69,7 @@ class KrbRelayxConfig(NTLMRelayxConfig):
     def setSCCMDPOptions(self, sccm_dp_extensions, sccm_dp_files):
         self.SCCMDPExtensions = sccm_dp_extensions
         self.SCCMDPFiles = sccm_dp_files
+
+    def setRunSocks(self, socks, server):
+        self.runSocks = socks
+        self.socksServer = server
