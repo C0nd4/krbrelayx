@@ -215,6 +215,10 @@ def main():
             c.setKrbOptions(options.format, options.victim)
             c.setIsADCSAttack(options.adcs)
             c.setADCSOptions(options.template)
+            c.setIsSCCMPoliciesAttack(options.sccm_policies)
+            c.setIsSCCMDPAttack(options.sccm_dp)
+            c.setSCCMPoliciesOptions(options.sccm_policies_clientname, options.sccm_policies_sleep)
+            c.setSCCMDPOptions(options.sccm_dp_extensions, options.sccm_dp_files)
 
             #If the redirect option is set, configure the HTTP server to redirect targets to SMB
             if server is HTTPKrbRelayServer and options.r is not None:
