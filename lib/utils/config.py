@@ -27,6 +27,14 @@ class KrbRelayxConfig(NTLMRelayxConfig):
         self.addcomputer = False
         self.delegateaccess = False
 
+        # SCCM attacks options
+        self.isSCCMPoliciesAttack = False
+        self.SCCMPoliciesClientname = None
+        self.SCCMPoliciesSleep = None
+        self.isSCCMDPAttack = False
+        self.SCCMDPExtensions = None
+        self.SCCMDPFiles = None
+
         # Custom options
         self.victim = None
 
