@@ -63,3 +63,17 @@ class KrbRelayxConfig(NTLMRelayxConfig):
     def setKrbOptions(self, outformat, victim):
         self.format = outformat
         self.victim = victim
+
+        def setIsSCCMPoliciesAttack(self, isSCCMPoliciesAttack):
+        self.isSCCMPoliciesAttack = isSCCMPoliciesAttack
+    
+    def setSCCMPoliciesOptions(self, sccm_policies_clientname, sccm_policies_sleep):
+        self.SCCMPoliciesClientname = sccm_policies_clientname
+        self.SCCMPoliciesSleep = sccm_policies_sleep
+    
+    def setIsSCCMDPAttack(self, isSCCMDPAttack):
+        self.isSCCMDPAttack = isSCCMDPAttack
+    
+    def setSCCMDPOptions(self, sccm_dp_extensions, sccm_dp_files):
+        self.SCCMDPExtensions = sccm_dp_extensions
+        self.SCCMDPFiles = sccm_dp_files
