@@ -52,9 +52,9 @@ from lib.servers import SMBRelayServer, HTTPKrbRelayServer, DNSRelayServer
 from lib.utils.config import KrbRelayxConfig
 from threading import Thread
 try:
-    from urllib.request import ProxyHandler, build_opener, Request
+    from urllib.request import ProxyHandler, build_opener, Request, urlparse
 except:
-    from urllib2 import ProxyHandler, build_opener, Request
+    from urllib2 import ProxyHandler, build_opener, Request, urlparse
 
 RELAY_SERVERS = ( SMBRelayServer, HTTPKrbRelayServer, DNSRelayServer )
 
