@@ -557,6 +557,12 @@ class SMBRelayServer(Thread):
         # Do attack. Note that unlike the HTTP server, the config entries are stored in the current object and not in any of its properties
         self.authUser = '%s/%s' % (authdata['domain'], authdata['username'])
         # No SOCKS, since socks is pointless when you can just export the tickets
+        if self.config.runSocks and self.target.scheme.upper() in self.config.socksServer.supportedSchemes:
+            if self.config.runSocks is True:
+                # Pass all the data to the socksplugins proxy
+                activeConnections.put((self.target.hostname, client.targetPort, self.target.scheme.upper(),
+                                       self.authUser, client, client.sessionData))
+                return
         # instead we iterate over all the targets
         for target in self.config.target.originalTargets:
             parsed_target = target
