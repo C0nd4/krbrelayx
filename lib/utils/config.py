@@ -65,7 +65,7 @@ class KrbRelayxConfig(NTLMRelayxConfig):
         self.victim = victim
 
     def setIsSCCMPoliciesAttack(self, isSCCMPoliciesAttack):
-    self.isSCCMPoliciesAttack = isSCCMPoliciesAttack
+        self.isSCCMPoliciesAttack = isSCCMPoliciesAttack
     
     def setSCCMPoliciesOptions(self, sccm_policies_clientname, sccm_policies_sleep):
         self.SCCMPoliciesClientname = sccm_policies_clientname
