@@ -315,6 +315,17 @@ def main():
     adcsoptions.add_argument('--altname', action='store', metavar="ALTNAME", required=False, help='Subject Alternative Name to use when performing ESC1 or ESC6 attacks.')
     adcsoptions.add_argument('-v', "--victim", action='store', metavar = 'TARGET', help='Victim username or computername$, to request the correct certificate name.')
 
+    # SCCM policies options
+    sccmpoliciesoptions = parser.add_argument_group("SCCM Policies attack options")
+    sccmpoliciesoptions.add_argument('--sccm-policies', action='store_true', required=False, help='Enable SCCM policies attack. Performs SCCM secret policies dump from a Management Point by registering a device. Works best when relaying a machine account. Expects as target \'http://<MP>/ccm_system_windowsauth/request\'')
+    sccmpoliciesoptions.add_argument('--sccm-policies-clientname', action='store', required=False, help='The name of the client that will be registered in order to dump secret policies. Defaults to the relayed account\'s name')
+    sccmpoliciesoptions.add_argument('--sccm-policies-sleep', action='store', required=False, help='The number of seconds to sleep after the client registration before requesting secret policies')
+
+    sccmdpoptions = parser.add_argument_group("SCCM Distribution Point attack options")
+    sccmdpoptions.add_argument('--sccm-dp', action='store_true', required=False, help='Enable SCCM Distribution Point attack. Perform package file dump from an SCCM Distribution Point. Expects as target \'http://<DP>/sms_dp_smspkg$/Datalib\'')
+    sccmdpoptions.add_argument('--sccm-dp-extensions', action='store', required=False, help='A custom list of extensions to look for when downloading files from the SCCM Distribution Point. If not provided, defaults to .ps1,.bat,.xml,.txt,.pfx')
+    sccmdpoptions.add_argument('--sccm-dp-files', action='store', required=False, help='The path to a file containing a list of specific URLs to download from the Distribution Point, instead of downloading by extensions. Providing this argument will skip file indexing')
+
     try:
         options = parser.parse_args()
     except Exception as e:
@@ -327,6 +338,18 @@ def main():
     else:
         logging.getLogger().setLevel(logging.INFO)
         logging.getLogger('impacket.smbserver').setLevel(logging.ERROR)
+
+     # Ensuring the correct target is set when performing SCCM policies attack
+    if options.sccm_policies is True and not options.target.rstrip('/').endswith("/ccm_system_windowsauth/request"):
+        logging.error("When performing SCCM policies attack, the Management Point authenticated device registration endpoint should be provided as target")
+        logging.error(f"For instance: {urlparse(options.target).scheme}://{urlparse(options.target).netloc}/ccm_system_windowsauth/request")
+        sys.exit(1)
+
+    # Ensuring the correct target is set when performing SCCM DP attack
+    if options.sccm_dp is True and not options.target.rstrip('/').endswith("/sms_dp_smspkg$/Datalib"):
+        logging.error("When performing SCCM DP attack, the Distribution Point Datalib endpoint should be provided as target")
+        logging.error(f"For instance: {urlparse(options.target).scheme}://{urlparse(options.target).netloc}/sms_dp_smspkg$/Datalib")
+        sys.exit(1)
 
     # Let's register the protocol clients we have
     # ToDo: Do this better somehow
