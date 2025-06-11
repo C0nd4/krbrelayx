@@ -154,19 +154,31 @@ class SMBRelayServer(Thread):
 
         blob = GSSAPIHeader_SPNEGO_Init2()
         blob['tokenOid'] = '1.3.6.1.5.5.2'
-        blob['innerContextToken']['mechTypes'].extend([MechType(TypesMech['KRB5 - Kerberos 5']),
-                                                       MechType(TypesMech['MS KRB5 - Microsoft Kerberos 5']),
-                                                       MechType(TypesMech['NTLMSSP - Microsoft NTLM Security Support Provider'])])
+        
+        # Update: Removed NTLMSSP and kept only Kerberos mechanisms
+        blob['innerContextToken']['mechTypes'].extend([
+            MechType(TypesMech['KRB5 - Kerberos 5']),
+            MechType(TypesMech['MS KRB5 - Microsoft Kerberos 5'])
+        ])
+        
+        # Set custom hintName
         blob['innerContextToken']['negHints']['hintName'] = "not_defined_in_RFC4178@please_ignore"
+        
+        # Encode the blob and assign to the response
         respSMBCommand['Buffer'] = encoder.encode(blob)
-
+        
+        # Set SecurityBufferLength
         respSMBCommand['SecurityBufferLength'] = len(respSMBCommand['Buffer'])
-
+        
+        # Assign response data to the packet
         respPacket['Data'] = respSMBCommand
-
+        
+        # Set connection data
         smbServer.setConnectionData(connId, connData)
-
+        
+        # Return response packet
         return None, [respPacket], STATUS_SUCCESS
+
 
     # This is SMB2
     def SmbSessionSetup(self, connId, smbServer, recvPacket):
